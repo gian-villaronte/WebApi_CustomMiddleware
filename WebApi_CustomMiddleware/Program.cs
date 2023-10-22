@@ -19,6 +19,7 @@ app.Use(async (context, next) =>
     Console.WriteLine($"Logic after executing the next delegate in the Use method");
 });
 
+//https://localhost:5001/usingmapbranch
 app.Map("/usingmapbranch", builder =>
 {
     builder.Use(async (context, next) =>
@@ -35,6 +36,16 @@ app.Map("/usingmapbranch", builder =>
     });
 });
 
+//https://localhost:5001/?testquerystring=test:
+app.MapWhen(context => context.Request.Query.ContainsKey("testquerystring"), builder =>
+{
+    builder.Run(async context =>
+    {
+        await context.Response.WriteAsync("Hello from the MapWhen branch.");
+    });
+});
+
+//launchUrl
 app.Run(async context =>
 {
     Console.WriteLine($"Writing the response to the client in the Run method");
